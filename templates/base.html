@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Marketplace{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="{{ url_for('products.list_products') }}" class="brand">Marketplace</a>
+      <div class="nav-links">
+        <a href="{{ url_for('products.list_products') }}">Products</a>
+        {% if nav_user %}
+          <a href="{{ url_for('wishlist.view_wishlist') }}">Wishlist</a>
+          <a href="{{ url_for('cart.view_cart') }}">Cart</a>
+          <a href="{{ url_for('orders.list_orders') }}">Orders</a>
+          {% if nav_user.role in ['admin', 'sales'] %}
+            <a href="{{ url_for('products.new') }}">Add Product</a>
+          {% endif %}
+          {% if nav_user.role == 'admin' %}
+            <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+          {% endif %}
+          <span class="badge">{{ nav_user.role }}</span>
+          <form method="post" action="{{ url_for('auth.logout') }}" style="display:inline;">
+            <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+          </form>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}">Login</a>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-sm">Sign up</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

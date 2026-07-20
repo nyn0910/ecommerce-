@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+
+<form method="get" class="filter-bar">
+  <input type="text" name="keyword" placeholder="Search products..." value="{{ keyword }}">
+  <input type="text" name="category" placeholder="Category" value="{{ category }}">
+  <input type="number" name="min_price" placeholder="Min ₹" value="{{ min_price }}">
+  <input type="number" name="max_price" placeholder="Max ₹" value="{{ max_price }}">
+  <button type="submit" class="btn">Filter</button>
+</form>
+
+{% if products %}
+<div class="grid">
+  {% for p in products %}
+  <div class="card">
+    <a href="{{ url_for('products.detail', product_id=p.id) }}">
+      <img src="{{ p.image_url }}" alt="{{ p.name }}">
+    </a>
+    <div class="card-body">
+      <div class="category-tag">{{ p.category }}</div>
+      <a href="{{ url_for('products.detail', product_id=p.id) }}">
+        <div class="product-name">{{ p.name }}</div>
+      </a>
+      <div class="price">₹{{ p.price }}</div>
+
+      {% if user %}
+      <div class="card-actions">
+        <form method="post" action="{{ url_for('cart.add', product_id=p.id) }}">
+          <button type="submit" class="btn btn-sm btn-block">Add to cart</button>
+        </form>
+        <form method="post" action="{{ url_for('wishlist.add', product_id=p.id) }}">
+          <button type="submit" class="btn btn-outline btn-sm">♥</button>
+        </form>
+      </div>
+      {% endif %}
+
+      {% if user and (user.role == 'admin' or (user.role == 'sales' and p.owner_id == user.id)) %}
+      <div class="card-actions">
+        <a href="{{ url_for('products.edit', product_id=p.id) }}" class="btn btn-outline btn-sm btn-block">Edit</a>
+        <form method="post" action="{{ url_for('products.delete', product_id=p.id) }}">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No products found.</p>
+{% endif %}
+
+{% endblock %}

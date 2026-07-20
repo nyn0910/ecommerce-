@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}My Cart{% endblock %}
+{% block content %}
+<h1>My Cart</h1>
+
+{% if items %}
+  {% for item in items %}
+  <div class="row-card">
+    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+    <div style="flex:1;">
+      <div class="row-title">{{ item.product.name }}</div>
+      <div class="row-sub">₹{{ item.product.price }}</div>
+    </div>
+    <form method="post" action="{{ url_for('cart.update', item_id=item.id) }}" class="qty-form">
+      <input type="number" name="quantity" value="{{ item.quantity }}" min="0">
+      <button type="submit" class="btn btn-outline btn-sm">Update</button>
+    </form>
+    <form method="post" action="{{ url_for('cart.remove', item_id=item.id) }}">
+      <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+    </form>
+  </div>
+  {% endfor %}
+
+  <div class="summary">
+    <div class="total-amount">Total: ₹{{ "%.2f"|format(total) }}</div>
+    <form method="post" action="{{ url_for('payment.checkout') }}">
+      <button type="submit" class="btn">Checkout with Razorpay</button>
+    </form>
+  </div>
+{% else %}
+  <p class="empty-state">Your cart is empty.</p>
+{% endif %}
+{% endblock %}

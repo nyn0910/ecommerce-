@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<div class="detail-grid">
+  <img src="{{ product.image_url }}" alt="{{ product.name }}">
+  <div>
+    <div class="category-tag">{{ product.category }}</div>
+    <h1>{{ product.name }}</h1>
+    <div class="detail-price">₹{{ product.price }}</div>
+    <p class="detail-desc">{{ product.description }}</p>
+    <p class="muted">Sold by {{ product.owner.name }}</p>
+
+    {% if user %}
+    <div class="card-actions" style="max-width:320px;">
+      <form method="post" action="{{ url_for('cart.add', product_id=product.id) }}">
+        <button type="submit" class="btn btn-block">Add to cart</button>
+      </form>
+      <form method="post" action="{{ url_for('wishlist.add', product_id=product.id) }}">
+        <button type="submit" class="btn btn-outline">♥ Wishlist</button>
+      </form>
+    </div>
+    {% else %}
+    <a href="{{ url_for('auth.login') }}" class="btn">Log in to buy</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

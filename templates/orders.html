@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<h1>
+  {% if user.role == 'admin' %}All Orders
+  {% elif user.role == 'sales' %}Orders with your products
+  {% else %}My Orders
+  {% endif %}
+</h1>
+
+{% if orders %}
+  {% for order in orders %}
+  <div class="row-card" style="flex-direction:column; align-items:stretch;">
+    <div style="display:flex; justify-content:space-between;" class="muted">
+      <span>Order #{{ order.id }}</span>
+      <span>{{ order.created_at.strftime('%d %b %Y, %H:%M') }}</span>
+    </div>
+    {% if user.role in ['admin', 'sales'] %}
+      <div class="muted">Buyer: {{ order.user.name }}</div>
+    {% endif %}
+    <table style="margin-top:8px;">
+      {% for item in order.items %}
+      <tr>
+        <td>{{ item.name }} × {{ item.quantity }}</td>
+        <td style="text-align:right;">₹{{ "%.2f"|format(item.price|float * item.quantity) }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    <div style="text-align:right; font-weight:700; margin-top:8px;">
+      Total: ₹{{ "%.2f"|format(order.total_amount) }}
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <p class="empty-state">No orders yet.</p>
+{% endif %}
+{% endblock %}

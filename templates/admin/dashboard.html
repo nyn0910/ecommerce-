@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Orders</div>
+    <div class="stat-value">{{ total_orders }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Sales</div>
+    <div class="stat-value">₹{{ "%.2f"|format(total_sales) }}</div>
+  </div>
+</div>
+
+<div class="section-title">Manage Users</div>
+<table>
+  <thead>
+    <tr><th>Name</th><th>Email</th><th>Role</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.name }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.role }}</td>
+      <td>
+        <form method="post" action="{{ url_for('admin.change_role', user_id=u.id) }}" style="display:flex; gap:6px;">
+          <select name="role">
+            <option value="user" {% if u.role == 'user' %}selected{% endif %}>user</option>
+            <option value="sales" {% if u.role == 'sales' %}selected{% endif %}>sales</option>
+            <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>admin</option>
+          </select>
+          <button type="submit" class="btn btn-sm">Save</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
