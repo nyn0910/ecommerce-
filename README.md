@@ -94,8 +94,7 @@ After deploying: register → browse → add to cart → checkout → pay with t
 confirm you land back on Orders with the order visible.
 
 ## Screenshots
-(Add 2-3 screenshots here: product grid, checkout redirect, admin dashboard)
-
+![Project Screenshot](screenshots.png)
 ## Where role enforcement actually happens
 Every restricted route uses `role_required(...)` in `utils/auth.py`, which checks the **server-side
 session** (not anything the browser can fake) and returns a `403` page if the role doesn't match.
